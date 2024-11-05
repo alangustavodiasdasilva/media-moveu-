@@ -1,14 +1,16 @@
 document.getElementById("inputForm").addEventListener("submit", function(event) {
     event.preventDefault();
 
-    // Valores médios e variação para temperatura e umidade
+    // Valores médios para temperatura e umidade
     const avgTemp = 21.0; // média de temperatura
-    const tempVariation = 0.3; // variação da temperatura
     const avgHumidity = 65.0; // média de umidade
-    const humidityVariation = 0.5; // variação da umidade
     const numRows = parseInt(document.getElementById("numRows").value);
 
-    // Gera dados aleatórios com média e variação fixas
+    // Obtém os desvios (variação) da entrada do usuário
+    const tempVariation = parseFloat(document.getElementById("tempVariation").value);
+    const humidityVariation = parseFloat(document.getElementById("humidityVariation").value);
+
+    // Gera dados aleatórios com média e variação definidas pelo usuário
     const data = generateRandomData(avgTemp, tempVariation, avgHumidity, humidityVariation, numRows);
 
     // Exibe os dados na tabela

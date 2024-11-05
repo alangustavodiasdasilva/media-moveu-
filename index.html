@@ -12,6 +12,12 @@
         <form id="inputForm">
             <label for="numRows">Quantidade de Linhas:</label>
             <input type="number" id="numRows" required>
+
+            <label for="tempVariation">Desvio da Temperatura:</label>
+            <input type="number" id="tempVariation" step="0.01" value="0.3" required>
+
+            <label for="humidityVariation">Desvio da Umidade:</label>
+            <input type="number" id="humidityVariation" step="0.01" value="0.5" required>
             
             <button type="submit">Gerar Dados</button>
         </form>
@@ -47,7 +53,6 @@
                         <th>Temp 11</th>
                         <th>Umid 12</th>
                         <th>Umid 12</th>
-
                     </tr>
                 </thead>
                 <tbody>
