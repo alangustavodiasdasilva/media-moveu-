@@ -47,8 +47,13 @@ button:hover {
 }
 
 #copyButton {
-    margin-top: 10px;
+    display: none; /* Oculto inicialmente */
     background-color: #008CBA;
+    color: white;
+    padding: 10px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
 }
 
 #copyButton:hover {

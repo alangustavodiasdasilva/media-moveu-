@@ -24,7 +24,8 @@ document.getElementById("inputForm").addEventListener("submit", function(event) 
     });
 
     // Exibe o botão de copiar
-    document.getElementById("copyButton").style.display = "inline";
+    const copyButton = document.getElementById("copyButton");
+    copyButton.style.display = "block";
 });
 
 document.getElementById("copyButton").addEventListener("click", function() {
