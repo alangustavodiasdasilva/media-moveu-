@@ -1,78 +1,83 @@
-document.getElementById("inputForm").addEventListener("submit", function(event) {
-    event.preventDefault();
-
-    // Valores médios para temperatura e umidade
-    const avgTemp = 21.0; // média de temperatura
-    const avgHumidity = 65.0; // média de umidade
+function generateData() {
     const numRows = parseInt(document.getElementById("numRows").value);
+    const startTime = document.getElementById("startTime").value;
 
-    // Obtém os desvios (variação) da entrada do usuário
-    const tempVariation = parseFloat(document.getElementById("tempVariation").value);
-    const humidityVariation = parseFloat(document.getElementById("humidityVariation").value);
+    const tableBody = document.getElementById("resultTable").querySelector("tbody");
+    tableBody.innerHTML = ""; // Limpa a tabela antes de gerar novos dados
 
-    // Gera dados aleatórios com média e variação definidas pelo usuário
-    const data = generateRandomData(avgTemp, tempVariation, avgHumidity, humidityVariation, numRows);
+    let currentTime = parseTime(startTime);
 
-    // Exibe os dados na tabela
-    const resultTable = document.getElementById("resultTable").getElementsByTagName("tbody")[0];
-    resultTable.innerHTML = ""; // Limpa a tabela
+    for (let i = 0; i < numRows; i++) {
+        const row = document.createElement("tr");
 
-    data.forEach(row => {
-        const newRow = resultTable.insertRow();
-        Object.values(row).forEach(value => {
-            const cell = newRow.insertCell();
-            cell.textContent = value.toFixed(2);
-        });
-    });
+        // Adiciona o horário formatado para cada linha
+        const timeCell = document.createElement("td");
+        timeCell.textContent = formatTime(currentTime);
+        row.appendChild(timeCell);
+
+        // Gera uma temperatura fixa entre 20 e 22 para esta linha
+        const tempFixed = randomInRange(20, 22).toFixed(2);
+
+        // Adiciona valores de temperatura fixa e umidade variável para cada sensor
+        for (let j = 1; j <= 12; j++) { // 12 sensores para temperatura e umidade
+            const tempCell = document.createElement("td");
+            tempCell.textContent = tempFixed;  // Temperatura fixa entre 20 e 22
+            row.appendChild(tempCell);
+
+            const umidCell = document.createElement("td");
+            umidCell.textContent = randomInRange(63, 67).toFixed(2);  // Umidade variável entre 63 e 67
+            row.appendChild(umidCell);
+        }
+
+        // Adiciona a linha à tabela
+        tableBody.appendChild(row);
+
+        // Incrementa o horário em um minuto
+        currentTime.setMinutes(currentTime.getMinutes() + 1);
+
+        // Reseta o horário para 00:01 se ultrapassar 23:59
+        if (currentTime.getHours() === 0 && currentTime.getMinutes() === 0) {
+            currentTime.setHours(0, 1, 0, 0); // Define para 00:01
+        }
+    }
 
     // Exibe o botão de copiar
-    const copyButton = document.getElementById("copyButton");
-    copyButton.style.display = "block";
-});
+    document.getElementById("copyButton").style.display = "block";
+}
 
-document.getElementById("copyButton").addEventListener("click", function() {
+function parseTime(timeString) {
+    const [hours, minutes, seconds] = timeString.split(":");
+    const [sec, millis] = seconds.split(".");
+    return new Date(1970, 0, 1, hours, minutes, sec, millis);
+}
+
+function formatTime(date) {
+    return date.toTimeString().split(" ")[0] + "." + date.getMilliseconds().toString().padStart(3, "0");
+}
+
+function randomInRange(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+function copyData() {
     const table = document.getElementById("resultTable");
-    const rows = Array.from(table.rows);
-    const text = rows.map(row => Array.from(row.cells).map(cell => cell.textContent).join(",")).join("\n");
+    let range, selection;
 
-    // Copia o texto para a área de transferência
-    navigator.clipboard.writeText(text).then(() => {
+    if (document.createRange && window.getSelection) {
+        range = document.createRange();
+        selection = window.getSelection();
+        selection.removeAllRanges();
+
+        try {
+            range.selectNodeContents(table);
+            selection.addRange(range);
+        } catch (e) {
+            range.selectNode(table);
+            selection.addRange(range);
+        }
+
+        document.execCommand("copy");
+        selection.removeAllRanges();
         alert("Dados copiados para a área de transferência!");
-    }).catch(err => {
-        console.error("Erro ao copiar para a área de transferência: ", err);
-    });
-});
-
-// Função para gerar os dados aleatórios
-function generateRandomData(avgTemp, tempVariation, avgHumidity, humidityVariation, numRows) {
-    const data = [];
-    for (let i = 0; i < numRows; i++) {
-        data.push({
-            "Temp 1": avgTemp + (Math.random() * 2 - 1) * tempVariation,
-            "Umid 1": avgHumidity + (Math.random() * 2 - 1) * humidityVariation,
-            "Temp 2": avgTemp + (Math.random() * 2 - 1) * tempVariation,
-            "Umid 2": avgHumidity + (Math.random() * 2 - 1) * humidityVariation,
-            "Temp 3": avgTemp + (Math.random() * 2 - 1) * tempVariation,
-            "Umid 3": avgHumidity + (Math.random() * 2 - 1) * humidityVariation,
-            "Temp 4": avgTemp + (Math.random() * 2 - 1) * tempVariation,
-            "Umid 4": avgHumidity + (Math.random() * 2 - 1) * humidityVariation,
-            "Temp 5": avgTemp + (Math.random() * 2 - 1) * tempVariation,
-            "Umid 5": avgHumidity + (Math.random() * 2 - 1) * humidityVariation,
-            "Temp 6": avgTemp + (Math.random() * 2 - 1) * tempVariation,
-            "Umid 6": avgHumidity + (Math.random() * 2 - 1) * humidityVariation,
-            "Temp 7": avgTemp + (Math.random() * 2 - 1) * tempVariation,
-            "Umid 7": avgHumidity + (Math.random() * 2 - 1) * humidityVariation,
-            "Temp 8": avgTemp + (Math.random() * 2 - 1) * tempVariation,
-            "Umid 8": avgHumidity + (Math.random() * 2 - 1) * humidityVariation,
-            "Temp 9": avgTemp + (Math.random() * 2 - 1) * tempVariation,
-            "Umid 9": avgHumidity + (Math.random() * 2 - 1) * humidityVariation,
-            "Temp 10": avgTemp + (Math.random() * 2 - 1) * tempVariation,
-            "Umid 10": avgHumidity + (Math.random() * 2 - 1) * humidityVariation,
-            "Temp 11": avgTemp + (Math.random() * 2 - 1) * tempVariation,
-            "Umid 11": avgHumidity + (Math.random() * 2 - 1) * humidityVariation,
-            "Temp 12": avgTemp + (Math.random() * 2 - 1) * tempVariation,
-            "Umid 12": avgHumidity + (Math.random() * 2 - 1) * humidityVariation,
-        });
     }
-    return data;
 }
